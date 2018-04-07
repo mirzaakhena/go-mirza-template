@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 	"time"
 
@@ -152,8 +151,9 @@ func main() {
 	})
 
 	m.HandleMessage(func(s *melody.Session, msg []byte) {
-		fmt.Printf("%+v", s.Request.URL)
-		m.Broadcast(msg)
+		m.BroadcastFilter(msg, func(q *melody.Session) bool {
+			return q.Request.URL.Path == s.Request.URL.Path
+		})
 	})
 
 	r.Run(":8081")
